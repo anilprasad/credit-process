@@ -5,7 +5,6 @@ const SEGMENTS = require('@digifi-los/segmentloader');
 
 var underwriting;
 var credit_segments;
-var logger;
 var segment_query;
 
 /**
@@ -18,22 +17,30 @@ var segment_query;
  * @return {Promise} Returns promise that resolves to loaded credit pipelines
  */
 var generateCreditSegments = function (query = { active: true, }, force = false, options = {}) {
-  if (typeof credit_segments !== 'function' || force) {
-    return underwriting(segment_query || query, force, options)
-      .then(initialized_engines => {
-        return Object.keys(initialized_engines).reduce((result, key) => {
-          let evaluator = SEGMENTS.generateEvaluators({ conditions: initialized_engines[ key ].conditions || [], engine: initialized_engines[ key ].evaluator, engine_name: key, organization: initialized_engines[ key ].organization, });
-          result[ key ] = evaluator;
-          return result;
-        }, {})
-      })
-      .then(initialized_segments => SEGMENTS.evaluate(initialized_segments, true))
-      .then(result => {
-        credit_segments = result;
-        return credit_segments;
-      }, e => Promisie.reject(e));
+  if (typeof credit_segments === 'function' && !force) {
+    return Promisie.resolve(credit_segments);
   }
-  return Promisie.resolve(credit_segments);
+
+  return underwriting(segment_query || query, force, options)
+    .then(initialized_engines => {
+      return Object.keys(initialized_engines).reduce((result, key) => {
+        result[ key ] = SEGMENTS.generateEvaluators({
+          conditions: initialized_engines[ key ].conditions || [],
+          engine: initialized_engines[ key ].evaluator,
+          engine_name: key, organization: initialized_engines[ key ].organization,
+        });
+
+        return result;
+      }, {});
+    })
+    .then(initialized_segments => {
+      return SEGMENTS.evaluate(initialized_segments, true);
+    })
+    .then(result => {
+      credit_segments = result;
+      return credit_segments;
+    })
+    .catch(e => Promisie.reject(e));
 };
 
 /**
@@ -109,8 +116,11 @@ var setCreditEngineQuery = function (query) {
  * @return {Function[]} Returns an object with all the function in this file 
 * */
 module.exports = function initialize(resources = {}) {
-  if (process.env && process.env.NODE_ENV === 'test' && this && this.underwriting) underwriting = this.underwriting;  
-  else underwriting = CREDIT.initialize(resources);
-  logger = resources.logger;
+  if (process.env && process.env.NODE_ENV === 'test' && this && this.underwriting) {
+    underwriting = this.underwriting;
+  } else {
+    underwriting = CREDIT.initialize(resources);
+  }
+
   return { loadCreditEvaluation, generateCreditSegments, setCreditEngineQuery, };
 };
