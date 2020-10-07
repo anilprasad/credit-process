@@ -4,7 +4,6 @@ const path = require('path');
 const strategyLoader = require(path.join(__dirname, './lib/strategy'));
 
 var collections;
-var logger;
 var credit_pipelines;
 
 /**
@@ -46,22 +45,43 @@ var load_pipeline = function (engine) {
         if (_pipeline) {
           return _pipeline(state)
             .then(result => {
-              let output_variables = Object.assign({}, result.calculated_variables, result.output_variables, result.scorecard_variables, result.assignment_variables, result.artificialintelligence_variables, result.dataintegration_variables);
-              let output_keys = Object.keys(output_variables);
-              output_keys.forEach(key => {
-                output_variables[key] = result[key]
-              })
+              let output_variables = Object.assign(
+                {},
+                result.calculated_variables,
+                result.output_variables,
+                result.scorecard_variables,
+                result.assignment_variables,
+                result.artificialintelligence_variables,
+                result.dataintegration_variables,
+              );
+
+              Object.keys(output_variables).forEach(outputKey => {
+                output_variables[outputKey] = result[outputKey]
+              });
+
               let input_variables = {};
               let protectedVars = { strategy_status: true, passed: true, };
+
               Object.keys(result).forEach(key => {
-                if ((result[key] === null || typeof result[ key ] !== 'object') && output_variables[ key ] === undefined && !protectedVars[ key ]) input_variables[ key ] = result[ key ];
+                if (result[key] !== null && typeof result[ key ] === 'object') {
+                  return;
+                }
+                
+                if (output_variables[ key ] !== undefined) {
+                  return;
+                }
+                
+                if (!protectedVars[ key ]) {
+                  input_variables[ key ] = result[ key ];
+                }
               })
 
               input_variables = Object.assign({}, input_variables);
               const data_sources = [];
+
               if (result.datasources) {
                 Object.keys(result.datasources).forEach(ds => {
-                  const di = result.datasources[ ds ];
+                  const di = result.datasources[ds];
                   const obj = {
                     name: di.name,
                     provider: di.provider,
@@ -70,6 +90,7 @@ var load_pipeline = function (engine) {
                   data_sources.push(obj)
                 });
               }
+
               return Object.assign({}, {
                 passed: (result.passed !== undefined) ? result.passed : true,
                 decline_reasons: result.decline_reasons || [],
@@ -126,7 +147,7 @@ var load_pipeline = function (engine) {
               }
             });
         } else {
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve) => {
             resolve(Object.assign({}, {
               passed: true,
               decline_reasons: [],
@@ -139,7 +160,7 @@ var load_pipeline = function (engine) {
         }
       };
     })
-    .catch(e => Promise.reject(e));
+    .catch(error => Promise.reject(error));
 };
 
 
@@ -175,7 +196,10 @@ var load_strategy_pipeline = function (engines, options = {}) {
  * @return {Promise} Returns pipieline for loading the strategy and creating the strategy pipeline function 
  */
 var load_credit_pipelines = function (query, options) {
-  let configuration_pipe = (options.compiledstrategy) ? Promisie.pipe([ load_strategy_pipeline, ]) : Promisie.pipe([ load_strategies, load_strategy_pipeline, ]);
+  let configuration_pipe = (options.compiledstrategy)
+    ? Promisie.pipe([ load_strategy_pipeline, ])
+    : Promisie.pipe([ load_strategies, load_strategy_pipeline, ]);
+
   return configuration_pipe(query, options);
 };
 
@@ -202,7 +226,6 @@ var stageCreditPipelines = function (query, force = false, options = {}) {
 
 var initialize = function (resources) {
   collections = resources.datas;
-  logger = resources.logger;
   return stageCreditPipelines;
 };
 

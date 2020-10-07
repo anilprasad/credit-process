@@ -220,7 +220,7 @@ var updateState = function (module_name, module_type, module_display_name) {
           });
         } else {
           let segment_name = segment_names[ 0 ];
-          let di = (state && state.dataintegration && state.dataintegration[ segment_name ] && state.dataintegration[ segment_name ]) ? state.dataintegration[ segment_name ] : {};
+          let di = state && state.dataintegration && state.dataintegration[ segment_name ] || {};
           state = Object.assign({}, state, di.output);
           state.datasources = state.datasources || [];
           state.datasources.push(di);

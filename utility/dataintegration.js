@@ -22,6 +22,7 @@ var compileDataIntegrationSegmentEvaluations = function (segments, module_name, 
         let _segment = Object.assign({}, segment._doc, { evaluator, });
         _segment.name = segment.name.replace(/^(.+)(\.v\d{1,2}(.\d{1,2}){0,2}.*)$/, '$1');
         _segment.conditions = segment.conditions || [];
+
         return _segment;
       })
       .catch(e => Promisie.reject(e));
