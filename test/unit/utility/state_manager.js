@@ -1,9 +1,7 @@
 'use strict';
 const chai = require('chai');
 const expect = chai.expect;
-const Promisie = require('promisie');
-const updateState = require('../../../utility/state_manager').updateState;
-const path = require('path');
+const updateState = require('../../../utility/stateManager').updateState;
 
 chai.use(require('chai-spies'));
 

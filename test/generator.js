@@ -1,12 +1,11 @@
 'use strict';
-const Promisie = require('promisie');
 
 const ML = {
-  mlGenerator: function (options) { return Promisie.resolve(function () { }) },
+  mlGenerator: async () => () => {},
 };
 
 const DI = {
-  diGenerator: function (options) { return Promisie.resolve(function () { }) },
+  diGenerator: async () => () => {},
 };
 
 module.exports = {

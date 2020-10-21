@@ -1,15 +1,7 @@
 'use strict';
 /*jshint expr: true*/
-const path = require('path');
-const events = require('events');
 const chai = require('chai');
-const sinon = require('sinon');
-const vm = require('vm');
 const expect = chai.expect;
-'use strict';
-
-const util = require('util');
-const Promisie = require('promisie');
 chai.use(require('sinon-chai'));
 const segments = require('../../../lib/segments.js');
 
@@ -89,9 +81,6 @@ describe('Lib/Segments', function () {
     it('should compile segments based on the configurations and return segment evaluator function', () => {
       let evaluationFunc = function(key, val) {
         return val;
-      };
-      let segmentFunc = function(state) {
-        return [];
       };
       let segmentLoader = {
         generateEvaluators: function(configurations) {

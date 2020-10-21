@@ -1,13 +1,7 @@
 'use strict';
 /*jshint expr: true*/
-const path = require('path');
-const events = require('events');
 const chai = require('chai');
-const sinon = require('sinon');
-const vm = require('vm');
 const expect = chai.expect;
-const util = require('util');
-const Promisie = require('promisie');
 chai.use(require('sinon-chai'));
 const compileAssignmentsSegmentEvaluations = require('../../../utility/assignments');
 
