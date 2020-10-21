@@ -1,11 +1,7 @@
-'use strict';
-const compileCreditEngine = require('./creditEngineCompiler');
+import compileCreditEngine from './creditEngineCompiler';
+import CompiledStrategy from './types/CompiledStrategy';
 
-class CreditPipeline {
-  constructor(resources) {
-    this.collections = resources.datas;
-  };
-
+export default class CreditPipeline {
   /**
    * 
    * Given compiled strategy configuration, builds the credit pipeline
@@ -16,19 +12,19 @@ class CreditPipeline {
   async loadPipeline(compiledStrategy) {
     const creditPipeline = await compileCreditEngine(compiledStrategy);
 
-    if (!creditPipeline || !creditPipeline.length) {
-      return {
-        passed: true,
-        decline_reasons: [],
-        input_variables: state,
-        output_variables: {},
-        processing_detail: [],
-        data_sources: [],
-      };
-    }
-
     return async (state) => {
       try {
+        if (!creditPipeline || !creditPipeline.length) {
+          return {
+            passed: true,
+            decline_reasons: [],
+            input_variables: state,
+            output_variables: {},
+            processing_detail: [],
+            data_sources: [],
+          };
+        }
+
         let processingState = Object.assign({}, state);
 
         for (const creditOperation of creditPipeline) {
@@ -115,50 +111,9 @@ class CreditPipeline {
     };
   }
 
-  /**
-   * 
-   * Creates an array of pipeline loading functions
-   * 
-   * @param {Object} query Query to be used to load compiled strategies
-   * @param {Object} options options to be used to load compiled strategies
-   * @return {Promise} Returns pipieline for loading the strategy and creating the strategy pipeline function 
-   */
-  async initializeCreditPipelines(query, options) {
-    const Strategy = this.collections.get('standard_compiledstrategy');
+  async getCreditPipeline(compiledStrategy: CompiledStrategy) {
+    const evaluator = await this.loadPipeline(compiledStrategy);
 
-    const strategies = options.compiledstrategy
-      ? [ options.compiledstrategy, ]
-      : await Strategy.query({ query, });
-
-    const evaluators = [];
-
-    for (const strategy of strategies) {
-      const evaluator = await this.loadPipeline(strategy);
-      evaluators.push({ evaluator, organization: strategy.organization, });
-    }
-
-    return evaluators;
-  };
-
-  /**
-   * 
-   * Wrapper function for loading the credit pipelines
-   * 
-   * @param {Object} query Query to be used to load compiled strategies
-   * @param {bool} force if false will reload the pipelines instead of using the already existing pipelines
-   * @param {Object} options options to be used to load compiled strategies
-   * @return {Promise} Returns promise that loads the credit pipelines
-   */
-  async getCreditPipelines(query, force = false, options = {}) {
-    if (this.creditPipelines && !force) {
-      return this.creditPipelines;
-    }
-  
-    this.creditPipelines = await this.initializeCreditPipelines(query, options);
-
-    return this.creditPipelines;
+    return { evaluator, organization: compiledStrategy.organization, };
   };
 }
-
-
-module.exports = CreditPipeline;

@@ -1,12 +1,19 @@
-'use strict';
-const EvaluatorsCompiler = require('./evaluatorsCompiler');
-const generateAI = require('@digifi-los/ml');
-const generateAssignments = require('@digifi-los/assignments');
-const generateCalculations = require('@digifi-los/calculations');
-const generateDataIntegration = require('@digifi-los/data-integrations-strategy');
-const generateOutput = require('@digifi-los/output');
-const generateRequirements = require('@digifi-los/requirements');
-const generateScorecard = require('@digifi-los/scorecard');
+import { ModuleType } from './enums/ModuleType';
+import EvaluatorsCompiler from './evaluatorsCompiler';
+// @ts-ignore
+import generateAI from '@digifi-los/ml';
+// @ts-ignore
+import generateAssignments from '@digifi-los/assignments';
+// @ts-ignore
+import generateCalculations from '@digifi-los/calculations';
+// @ts-ignore
+import generateDataIntegration from '@digifi-los/data-integrations-strategy';
+// @ts-ignore
+import generateOutput from '@digifi-los/output';
+// @ts-ignore
+import generateRequirements from '@digifi-los/requirements';
+// @ts-ignore
+import generateScorecard from '@digifi-los/scorecard';
 
 const moduleTypeToCreateEvaluatorCallback = {
   artificialintelligence: generateAI,
@@ -18,7 +25,7 @@ const moduleTypeToCreateEvaluatorCallback = {
   scorecard: generateScorecard,
 }
 
-const getCreateEvaluatorCallback = (moduleType) => {
+const getCreateEvaluatorCallback = (moduleType: ModuleType) => {
   const createEvaluatorCallback = moduleTypeToCreateEvaluatorCallback[moduleType];
 
   if (!createEvaluatorCallback) {
@@ -28,7 +35,7 @@ const getCreateEvaluatorCallback = (moduleType) => {
   return createEvaluatorCallback;
 }
 
-module.exports = (moduleType) => {
+export default (moduleType: ModuleType) => {
   const createEvaluatorCallback = getCreateEvaluatorCallback(moduleType);
 
   const evaluatorsCompiler = new EvaluatorsCompiler(createEvaluatorCallback);

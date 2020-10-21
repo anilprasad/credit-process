@@ -4,8 +4,11 @@
     "type": "git",
     "url": "git+ssh://git@github.com/digifi-io/credit-process.git"
   },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "start": "node ./index.js",
+    "prepublish": "npm run build",
+    "build": "tsc",
     "test": "export NODE_ENV=test && mocha -R spec --recursive"
   },
   "contributors": [
@@ -29,7 +32,6 @@
   "author": "DigiFi",
   "homepage": "https://github.com/digifi-io/credit-process#readme",
   "keywords": [],
-  "main": "index.js",
   "name": "@digifi-los/credit-process",
   "optionalDependencies": {},
   "readme": "\n",
@@ -50,12 +52,13 @@
   },
   "description": "Dynamic credit pipeline creator for DigiFi DecisionVision Platform",
   "devDependencies": {
-    "chai-spies": "^1.0.0",
     "chai": "^3.4.1",
+    "chai-spies": "^1.0.0",
     "fs-extra": "^0.30.0",
     "mocha": "^2.4.4",
     "periodicjs": "^10.9.31",
+    "sinon": "^6.0.0",
     "sinon-chai": "^3.2.0",
-    "sinon": "^6.0.0"
+    "typescript": "^4.0.3"
   }
 }

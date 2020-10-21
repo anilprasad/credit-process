@@ -1,5 +1,5 @@
-'use strict';
-const load_segment = require('@digifi-los/segmentloader');
+import { ModuleType } from './enums/ModuleType';
+import segmentLoader from './segmentLoader';
 
 /**
  * Creates the iterator for the segment evaluators
@@ -94,17 +94,8 @@ const createSegmentEvaluator = (segments, type, module_name = null) => {
  * 
  * @returns {Function} segment evaluator function that takes a state
  */
-const compileSegments = (moduleType, moduleName = null, segmentRules) =>  {
-  const _configurations = Array.isArray(segmentRules) ? segmentRules : [segmentRules,];
-  const segmentLoader = this && this.segmentLoader ? this.segmentLoader : load_segment;
-  const evaluators = segmentLoader.generateEvaluators(_configurations);
-  const segments = segmentLoader.evaluate(evaluators, true);
+export default (moduleType: ModuleType, moduleName = null, segmentRules) =>  {
+  const evaluators = segmentLoader.generateEvaluators(segmentRules);
 
-  return createSegmentEvaluator(segments, moduleType, moduleName);
-};
-
-module.exports = {
-  generateSegmentIterator,
-  createSegmentEvaluator,
-  compileSegments,
+  return createSegmentEvaluator(evaluators, moduleType, moduleName);
 };
