@@ -1,17 +1,9 @@
 import Variable from './Variable';
 import Organization from './Organization';
+import Rule from './Rule';
+import Module from './Module';
 
-type Module = {
-  type: string;
-  name: string;
-  active: boolean;
-  display_name: string;
-  lookup_name: string;
-};
-
-type Rule = {};
-
-export default class CompiledStrategy {
+export default interface CompiledStrategy {
   name: string;
   title: string;
   description?: string;

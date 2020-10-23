@@ -1,5 +1,5 @@
 {
-  "version": "0.1.24",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/digifi-io/credit-process.git"
@@ -11,25 +11,8 @@
     "build": "tsc",
     "test": "export NODE_ENV=test && mocha -R spec --recursive"
   },
-  "contributors": [
-    {
-      "name": "Jan Bialostok",
-      "email": "janbialostok@gmail.com"
-    },
-    {
-      "name": "Mark Waldron",
-      "email": "markewaldron@gmail.com"
-    },
-    {
-      "name": "Iris Dan",
-      "email": "yjdan92@gmail.com"
-    },
-    {
-      "name": "Cody Hahn",
-      "email": "codhah92@gmail.com"
-    }
-  ],
   "author": "DigiFi",
+  "description": "Dynamic credit pipeline creator for DigiFi DecisionVision Platform",
   "homepage": "https://github.com/digifi-io/credit-process#readme",
   "keywords": [],
   "name": "@digifi-los/credit-process",
@@ -43,20 +26,20 @@
     "@digifi-los/assignments": "^0.0.1",
     "@digifi-los/calculations": "^0.0.1",
     "@digifi-los/comparison": "^0.0.2",
-    "@digifi-los/data-integrations-strategy": "^0.0.30",
+    "@digifi-los/data-integrations-strategy": "^1.0.0",
     "@digifi-los/ml": "^0.0.1",
     "@digifi-los/output": "^0.0.1",
     "@digifi-los/requirements": "^0.0.3",
     "@digifi-los/scorecard": "^0.0.1",
-    "@digifi-los/segmentloader": "^0.0.2"
+    "@digifi-los/segmentloader": "^0.0.2",
+    "aws-sdk": "^2.777.0"
   },
-  "description": "Dynamic credit pipeline creator for DigiFi DecisionVision Platform",
   "devDependencies": {
+    "@types/node": "^14.14.5",
     "chai": "^3.4.1",
     "chai-spies": "^1.0.0",
     "fs-extra": "^0.30.0",
     "mocha": "^2.4.4",
-    "periodicjs": "^10.9.31",
     "sinon": "^6.0.0",
     "sinon-chai": "^3.2.0",
     "typescript": "^4.0.3"

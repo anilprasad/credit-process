@@ -1,7 +1,6 @@
-'use strict';
-
-import { ModuleType } from '../enums/ModuleType';
-import CreditProcessState from '../types/CreditProcessState';
+import CreditProcessState from '../type/CreditProcessState';
+import Module from '../type/Module';
+import Segment from '../type/Segment';
 import artificialIntelligenceStateTransformer from './ArtificialIntelligenceStateTransformer';
 import assignmentsStateTransformer from './AssignmentsStateTransformer';
 import calculationsStateTransformer from './CalculationsStateTransformer';
@@ -20,35 +19,23 @@ const moduleStateTransformerToType = {
   scorecard: scoreCardStateTransformer,
 };
 
-export default (moduleName: string, moduleType: ModuleType, moduleDisplayName: string) => {
-  return async (state: CreditProcessState) => {
+class StateManager {
+  public updateStateWithModuleResults = async (module: Module, moduleResult: Segment | Segment[], state: CreditProcessState) => {
     state.credit_process = state.credit_process || [];
-
+  
     if (state.error) {
-      delete state.assignments;
-      delete state.calculations;
-      delete state.requirements;
-      delete state.output;
-      delete state.scorecard;
-      delete state.dataintegration;
-      delete state.dataintegrations;
-      delete state.artificialintelligence;
-
-      return Promise.reject(
-        Object.assign(
-          {},
-          state,
-          { message: `Error in ${moduleType} module ${moduleName}: ${state.error.message}`, },
-        )
-      );
+      return Promise.reject({
+        ...state,
+        message: `Error in ${module.type} module ${module.name}: ${state.error.message}`,
+      });
     }
-
-    const moduleStateTransformer = new moduleStateTransformerToType[moduleType]();
+  
+    const segments = Array.isArray(moduleResult) ? moduleResult : [moduleResult];
+  
+    const moduleStateTransformer = new moduleStateTransformerToType[module.type]();
     
-    await moduleStateTransformer.transform(state, moduleName, moduleDisplayName);
-
-    delete state[moduleType];
-
-    return state;
+    return moduleStateTransformer.transform(module, segments, state);
   };
-};
+}
+
+export default new StateManager();
