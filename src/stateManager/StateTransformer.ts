@@ -1,12 +1,12 @@
 import { ModuleType } from '../enum/ModuleType';
 import CreditProcessState from '../type/CreditProcessState';
-import Module from '../type/Module';
-import Segment from '../type/Segment';
+import CommonModule from '../type/Module';
+import Segment from '../type/StrategySegment';
 
 export default abstract class StateTransformer {
   protected abstract moduleType: ModuleType;
 
-  public transform = async (module: Module, segments: Segment[], state: CreditProcessState) => {  
+  public transform = async (module: CommonModule, segments: Segment[], state: CreditProcessState) => {  
     if (segments.length === 0) {  
       return this.noSegmentTransform(module, state);
     }
@@ -19,19 +19,19 @@ export default abstract class StateTransformer {
   }
 
   protected abstract noSegmentTransform(
-    module: Module,
+    module: CommonModule,
     state: CreditProcessState,
   ): Promise<CreditProcessState>;
 
   protected abstract singleSegmentTransform(
-    module: Module,
+    module: CommonModule,
     segment: Segment,
     state: CreditProcessState
   ): Promise<CreditProcessState>;
 
 
   protected async multipleSegmentTransform(
-    module: Module,
+    module: CommonModule,
     _segments: Segment[],
     state: CreditProcessState,
   ): Promise<CreditProcessState> {

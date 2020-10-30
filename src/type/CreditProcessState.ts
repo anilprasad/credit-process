@@ -1,6 +1,6 @@
 import CreditProcessUnit from './CreditProcessUnit';
 import DataSource from './DataSource'
-import Segment from './Segment';
+import Segment from './StrategySegment';
 
 export default interface CreditProcessState extends Record<string, any> {
   credit_process: CreditProcessUnit[];

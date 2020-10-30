@@ -1,12 +1,20 @@
-import { ModuleType } from '../enum/ModuleType';
-import Segment from './Segment';
+import { ModuleType } from 'enum/ModuleType';
+import { DataIntegration } from 'type/DataIntegration';
+import { StrategySegment } from 'type/StrategySegment';
 
-export default interface Module {
+interface CommonModule {
   type: ModuleType;
-  segments: Segment[] | Segment;
+  segments: StrategySegment[];
   name: string;
   active: boolean;
   display_name: string;
   lookup_name: string;
-  dataintegration?: Segment;
+  description?: string;
 }
+
+interface DataIntegrationModule extends CommonModule {
+  dataintegration: DataIntegration;
+  credentials: {};
+}
+
+export type Module = DataIntegrationModule | CommonModule;

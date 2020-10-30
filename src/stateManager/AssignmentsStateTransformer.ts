@@ -1,10 +1,10 @@
-import { ModuleType } from '../enum/ModuleType';
-import { ModuleDisplayType } from '../enum/ModuleDisplayType';
+import { ModuleType } from 'enum/ModuleType';
+import { ModuleDisplayType } from 'enum/ModuleDisplayType';
 
 import StateTransformer from './StateTransformer';
-import CreditProcessState from '../type/CreditProcessState';
-import Segment from '../type/Segment';
-import Module from '../type/Module';
+import CreditProcessState from 'type/CreditProcessState';
+import Segment from 'type/StrategySegment';
+import { Module } from 'type/Module';
 
 export default class AssignmentsStateTransformer extends StateTransformer {
   protected moduleType: ModuleType = ModuleType.assignments;

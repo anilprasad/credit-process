@@ -1,7 +1,7 @@
-import { ModuleType } from '../enum/ModuleType';
-import ModuleCompiler, { IModuleCompilationOptions } from './ModuleCompiler';
-import CreditProcessState from '../type/CreditProcessState';
-import Segment from '../type/Segment';
+import { ModuleType } from 'enum/ModuleType';
+import ModuleCompiler, { IModuleCompilationOptions } from 'module/ModuleCompiler';
+import CreditProcessState from 'type/CreditProcessState';
+import { StateSegment } from 'type/StateSegment';
 // @ts-ignore
 import * as generateAI from '@digifi-los/ml';
 // @ts-ignore
@@ -18,6 +18,7 @@ import * as generateRequirements from '@digifi-los/requirements';
 import * as generateScorecard from '@digifi-los/scorecard';
 // @ts-ignore
 import * as segmentLoader from '@digifi-los/segmentloader';
+import { Operation as any, Operation } from 'type/Operation';
 
 const moduleTypeToCreateEvaluatorCallback = new Map<ModuleType, any>([
   [ModuleType.artificialintelligence, generateAI],
@@ -39,31 +40,42 @@ const getCreateEvaluatorCallback = (moduleType: ModuleType) => {
   return createEvaluatorCallback;
 }
 
+const runConditionChecks = async (state: CreditProcessState, conditionChecks: any | any[]) => {
+  if (!Array.isArray(conditionChecks)) {
+    return conditionChecks(state);
+  }
+
+  for (const conditionCheck of conditionChecks) {
+    await conditionCheck(state);
+  }
+} 
+
+const runOperations = async (state: CreditProcessState, operations: Operation | Operation[]) => {
+  if (!Array.isArray(operations)) {
+    return operations(state);
+  }
+
+  let segments: StateSegment[] = [];
+
+  for (const operation of operations) {
+    const resultSegments = await operation(state);
+    segments = segments.concat(Array.isArray(resultSegments) ? resultSegments : [resultSegments]);
+  }
+
+  return segments;
+} 
+
 export default async (moduleCompilationOptions: IModuleCompilationOptions) => {
   const createEvaluatorCallback = getCreateEvaluatorCallback(moduleCompilationOptions.module_type);
 
   const moduleCompiler = new ModuleCompiler(createEvaluatorCallback);
 
-  const evaluations = await moduleCompiler.getSegmentEvaluations(moduleCompilationOptions)
+  const conditionChecks = segmentLoader.generateEvaluators(moduleCompilationOptions.segments);
+  const evaluations = await moduleCompiler.getModuleOperations(moduleCompilationOptions);
 
   return async (state: CreditProcessState) => {
-    if (!Array.isArray(evaluations)) {
-      return evaluations(state);
-    }
+    await runConditionChecks(state, conditionChecks);
 
-    let segments: Segment[] = [];
-
-    for (const evaluation of evaluations) {
-      const resultSegments = await evaluation(state);
-      segments = segments.concat(Array.isArray(resultSegments) ? resultSegments : [resultSegments]);
-    }
-
-    return segments;
+    return runOperations(state, evaluations);
   };
-  /* console.log('moduleCompilerFactory:46', configurations);
-
-  const evaluators = segmentLoader.generateEvaluators(configurations);
-  console.log('moduleCompilerFactory:49', evaluators);
-
-  return segmentLoader.evaluate(evaluators); */
 };

@@ -1,7 +1,7 @@
-import Variable from './Variable';
-import Organization from './Organization';
-import Rule from './Rule';
-import Module from './Module';
+import { StrategyVariable } from 'type/variable/StrategyVariable';
+import Organization from 'type/Organization';
+import Rule from 'type/Rule';
+import { Module } from 'type/Module';
 
 export default interface CompiledStrategy {
   name: string;
@@ -13,9 +13,9 @@ export default interface CompiledStrategy {
   createdat: Date;
   updatedat: Date;
   templates: Array<{ fileurl: string, filename: string,}>;
-  input_variables: Variable[];
-  output_variables: Variable[];
-  calculated_variables: Variable[];
+  input_variables: StrategyVariable[];
+  output_variables: StrategyVariable[];
+  calculated_variables: StrategyVariable[];
   decline_reasons: string[];
   rules?: Rule[];
   organization: Organization;

@@ -1,11 +1,11 @@
 import * as AWS from 'aws-sdk';
-import CompiledStrategy from './type/CompiledStrategy';
-import CreditProcessState from './type/CreditProcessState';
-import moduleCompilerFactory from './module/moduleCompilerFactory';
-import Module from './type/Module';
-import stateManager from './stateManager';
-import Variable from './type/Variable';
-import { Operation } from './module/ModuleCompiler';
+import CompiledStrategy from 'type/CompiledStrategy';
+import CreditProcessState from 'type/CreditProcessState';
+import moduleCompilerFactory from 'module/moduleCompilerFactory';
+import { Module } from 'type/Module';
+import stateManager from 'stateManager';
+import { StrategyVariable } from 'type/variable/StrategyVariable';
+import { Operation } from 'type/Operation';
 
 export default class CreditPipeline {
   private machinelearning?: any;
@@ -79,21 +79,20 @@ export default class CreditPipeline {
   }
 
   private formatStrategyResult(state: CreditProcessState, protectedVariables: Set<string>, failed = false) {
-    const output_variables = Object.assign(
-      {},
-      state.calculated_variables,
-      state.output_variables,
-      state.scorecard_variables,
-      state.assignment_variables,
-      state.artificialintelligence_variables,
-      state.dataintegration_variables,
-    );
+    const output_variables = {
+      ...state.calculated_variables,
+      ...state.output_variables,
+      ...state.scorecard_variables,
+      ...state.assignment_variables,
+      ...state.artificialintelligence_variables,
+      ...state.dataintegration_variables,
+    };
 
     Object.keys(output_variables).forEach(outputKey => {
       output_variables[outputKey] = state[outputKey];
     });
 
-    const input_variables: Record<string, Variable> = {};
+    const input_variables: Record<string, StrategyVariable> = {};
 
     Object.keys(state).forEach(key => {
       if (state[key] !== null && typeof state[key] === 'object') {

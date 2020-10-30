@@ -3,13 +3,13 @@ import { ModuleDisplayType } from '../enum/ModuleDisplayType';
 
 import StateTransformer from './StateTransformer';
 import CreditProcessState from '../type/CreditProcessState';
-import Segment from '../type/Segment';
-import Module from '../type/Module';
+import Segment from '../type/StrategySegment';
+import CommonModule from '../type/Module';
 
 export default class OutputStateTransformer extends StateTransformer {
   protected moduleType: ModuleType = ModuleType.output;
 
-  async noSegmentTransform(module: Module, state: CreditProcessState) {
+  async noSegmentTransform(module: CommonModule, state: CreditProcessState) {
     state.credit_process.push({
       type: ModuleDisplayType[this.moduleType],
       display_name: module.display_name,
@@ -21,7 +21,7 @@ export default class OutputStateTransformer extends StateTransformer {
     return state;
   }
 
-  async singleSegmentTransform(module: Module, segment: Segment, state: CreditProcessState) {
+  async singleSegmentTransform(module: CommonModule, segment: Segment, state: CreditProcessState) {
     const output = segment.output || {};
 
     state = {...state, ...output};
