@@ -3,27 +3,14 @@ import { ModuleDisplayType } from '../enum/ModuleDisplayType';
 
 import StateTransformer from './StateTransformer';
 import CreditProcessState from '../type/CreditProcessState';
-import Segment from '../type/StrategySegment';
-import CommonModule from '../type/Module';
+import { Module } from 'type/Module';
+import { RequirementsStateSegment } from 'type/StateSegment';
+import Rule from 'type/Rule';
 
 export default class RequirementsStateTransformer extends StateTransformer {
   protected moduleType: ModuleType = ModuleType.requirements;
 
-  async noSegmentTransform(module: CommonModule, state: CreditProcessState) {
-    state.credit_process.push({
-      type: ModuleDisplayType[this.moduleType],
-      display_name: module.display_name,
-      name: module.name,
-      passed: null,
-      segment: '',
-      decline_reasons: [],
-      rules: [],
-    });
-
-    return state;
-  }
-
-  async singleSegmentTransform(module: CommonModule, segment: Segment, state: CreditProcessState) {
+  async singleSegmentTransform(module: Module, segment: RequirementsStateSegment, state: CreditProcessState) {
     const decline_reasons = [
       ...(state.decline_reasons || []),
       ...(segment.decline_reasons || [])
@@ -35,7 +22,7 @@ export default class RequirementsStateTransformer extends StateTransformer {
   
     state.passed = segment.passed;
   
-    segment.rules = segment.rules!.map(rule => ({
+    const rules = segment.rules.map(rule => ({
       name: rule.name,
       passed: rule.passed,
       decline_reasons: rule.passed ? undefined : rule.decline_reasons,
@@ -46,7 +33,7 @@ export default class RequirementsStateTransformer extends StateTransformer {
       display_name: module.display_name,
       name: module.name,
       passed: segment.passed,
-      rules: segment.rules,
+      rules,
       segment: segment.segment,
       type: ModuleDisplayType[this.moduleType],
     });

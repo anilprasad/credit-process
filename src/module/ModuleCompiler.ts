@@ -15,10 +15,10 @@ export interface IModuleCompilationOptions {
   output_variables: CompiledStrategy['output_variables'];
 }
 
-type CreateOperation = (options: IModuleCompilationOptions) => Operation | Operation[];
+type CreateOperations = (options: IModuleCompilationOptions) => Operation | Operation[];
 
 export default class ModuleCompiler {
-  constructor(protected createOperation: CreateOperation) { }
+  constructor(protected createOperations: CreateOperations) { }
 
   public getModuleOperations = async (options: IModuleCompilationOptions) => {
     if (Array.isArray(options.segments)) {
@@ -27,7 +27,7 @@ export default class ModuleCompiler {
       this.updateSegment(options.segments);
     }
   
-    return this.createOperation(options);
+    return this.createOperations(options);
   }
 
   protected updateSegment = (segment: StrategySegment) => {

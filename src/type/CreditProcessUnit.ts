@@ -1,4 +1,3 @@
-import Rule from './Rule';
 import { ModuleDisplayType } from '../enum/ModuleDisplayType';
 
 export default interface CreditProcessUnit extends Record<string, any>  {
@@ -10,6 +9,6 @@ export default interface CreditProcessUnit extends Record<string, any>  {
   output_variable?: string;
   passed?: boolean | null;
   predicted_classification?: string;
-  rules?: Rule[];
-  status?: string;
+  rules?: Array<{ name: string, passed: boolean, decline_reasons?: string[] }>;
+  status?: string | number;
 }

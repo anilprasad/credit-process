@@ -3,26 +3,13 @@ import { ModuleDisplayType } from '../enum/ModuleDisplayType';
 
 import StateTransformer from './StateTransformer';
 import CreditProcessState from '../type/CreditProcessState';
-import Segment from '../type/StrategySegment';
-import CommonModule from '../type/Module';
+import { Module } from 'type/Module';
+import { ArtificialIntelligenceStateSegment } from 'type/StateSegment';
 
 export default class ArtificialIntelligenceStateTransformer extends StateTransformer {
   protected moduleType: ModuleType = ModuleType.artificialintelligence;
 
-  async noSegmentTransform(module: CommonModule, state: CreditProcessState) {
-    state.credit_process.push({
-      type: ModuleDisplayType[this.moduleType],
-      display_name: module.display_name,
-      name: module.name,
-      segment: '',
-      predicted_classification: '',
-      output_variable: '',
-    });
-
-    return state;
-  }
-
-  async singleSegmentTransform(module: CommonModule, segment: Segment, state: CreditProcessState) {
+  async singleSegmentTransform(module: Module, segment: ArtificialIntelligenceStateSegment, state: CreditProcessState) {
     state.artificialintelligence_variables = {
       ...(state.artificialintelligence_variables || {}),
       ...segment.output,

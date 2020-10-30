@@ -2,6 +2,8 @@ import { ModuleType } from 'enum/ModuleType';
 import ModuleCompiler, { IModuleCompilationOptions } from 'module/ModuleCompiler';
 import CreditProcessState from 'type/CreditProcessState';
 import { StateSegment } from 'type/StateSegment';
+import { Operation } from 'type/Operation';
+
 // @ts-ignore
 import * as generateAI from '@digifi-los/ml';
 // @ts-ignore
@@ -17,8 +19,6 @@ import * as generateRequirements from '@digifi-los/requirements';
 // @ts-ignore
 import * as generateScorecard from '@digifi-los/scorecard';
 // @ts-ignore
-import * as segmentLoader from '@digifi-los/segmentloader';
-import { Operation as any, Operation } from 'type/Operation';
 
 const moduleTypeToCreateEvaluatorCallback = new Map<ModuleType, any>([
   [ModuleType.artificialintelligence, generateAI],
@@ -30,25 +30,15 @@ const moduleTypeToCreateEvaluatorCallback = new Map<ModuleType, any>([
   [ModuleType.scorecard, generateScorecard],
 ]);
 
-const getCreateEvaluatorCallback = (moduleType: ModuleType) => {
-  const createEvaluatorCallback = moduleTypeToCreateEvaluatorCallback.get(moduleType);
+const getCreateOperationsGenerator = (moduleType: ModuleType) => {
+  const createOperations = moduleTypeToCreateEvaluatorCallback.get(moduleType);
 
-  if (!createEvaluatorCallback) {
+  if (!createOperations) {
     throw new Error(`unknown module type "${moduleType}"`);
   }
 
-  return createEvaluatorCallback;
+  return createOperations;
 }
-
-const runConditionChecks = async (state: CreditProcessState, conditionChecks: any | any[]) => {
-  if (!Array.isArray(conditionChecks)) {
-    return conditionChecks(state);
-  }
-
-  for (const conditionCheck of conditionChecks) {
-    await conditionCheck(state);
-  }
-} 
 
 const runOperations = async (state: CreditProcessState, operations: Operation | Operation[]) => {
   if (!Array.isArray(operations)) {
@@ -59,23 +49,21 @@ const runOperations = async (state: CreditProcessState, operations: Operation | 
 
   for (const operation of operations) {
     const resultSegments = await operation(state);
-    segments = segments.concat(Array.isArray(resultSegments) ? resultSegments : [resultSegments]);
+
+    if (resultSegments) {
+      segments = segments.concat(Array.isArray(resultSegments) ? resultSegments : [resultSegments]);
+    }
   }
 
   return segments;
 } 
 
 export default async (moduleCompilationOptions: IModuleCompilationOptions) => {
-  const createEvaluatorCallback = getCreateEvaluatorCallback(moduleCompilationOptions.module_type);
+  const createOperations = getCreateOperationsGenerator(moduleCompilationOptions.module_type);
 
-  const moduleCompiler = new ModuleCompiler(createEvaluatorCallback);
+  const moduleCompiler = new ModuleCompiler(createOperations);
 
-  const conditionChecks = segmentLoader.generateEvaluators(moduleCompilationOptions.segments);
-  const evaluations = await moduleCompiler.getModuleOperations(moduleCompilationOptions);
+  const operations = await moduleCompiler.getModuleOperations(moduleCompilationOptions);
 
-  return async (state: CreditProcessState) => {
-    await runConditionChecks(state, conditionChecks);
-
-    return runOperations(state, evaluations);
-  };
+  return async (state: CreditProcessState) => runOperations(state, operations);
 };

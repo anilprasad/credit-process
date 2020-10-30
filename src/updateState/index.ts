@@ -1,6 +1,6 @@
-import CreditProcessState from '../type/CreditProcessState';
-import CommonModule from '../type/Module';
-import Segment from '../type/StrategySegment';
+import CreditProcessState from 'type/CreditProcessState';
+import { Module } from 'type/Module';
+import { StateSegment } from 'type/StateSegment';
 import artificialIntelligenceStateTransformer from './ArtificialIntelligenceStateTransformer';
 import assignmentsStateTransformer from './AssignmentsStateTransformer';
 import calculationsStateTransformer from './CalculationsStateTransformer';
@@ -20,7 +20,11 @@ const moduleStateTransformerToType = {
 };
 
 class StateManager {
-  public updateStateWithModuleResults = async (module: CommonModule, moduleResult: Segment | Segment[], state: CreditProcessState) => {
+  public updateStateWithModuleResults = async (
+    module: Module,
+    moduleResult: StateSegment | StateSegment[],
+    state: CreditProcessState,
+  ) => {
     state.credit_process = state.credit_process || [];
   
     if (state.error) {

@@ -10,14 +10,20 @@ export interface BasicStateSegment extends Record<string, any> {
 
 export interface ScorecardStateSegment extends BasicStateSegment {
   output_variable: StrategySegment['output_variable'],
-  rules: Array<{ name: string, weight: number, }>;
+  rules: Array<{ name: string, passed: boolean, decline_reasons?: string[] }>;
   [key: string]: any;
 }
 
 export interface RequirementsStateSegment extends BasicStateSegment {
   passed: boolean;
-  decline_reasons: string;
+  decline_reasons: string[];
   rules: Array<{ name: string, passed: boolean, decline_reasons: string[] }>;
+}
+
+export interface OutputStateSegment extends BasicStateSegment {
+  passed: boolean;
+  decline_reasons: string[];
+  rules: Array<{ name: string, passed: boolean, condition_output: {} }>;
 }
 
 export interface CalculationsStateSegment extends BasicStateSegment {
@@ -34,7 +40,7 @@ export interface DataIntegrationStateSegment extends BasicStateSegment {
   provider: string;
   raw: string;
   rules: Rule[];
-  status: number;
+  status?: string | number;
 }
 
 export interface ArtificialIntelligenceStateSegment extends BasicStateSegment {
@@ -45,6 +51,7 @@ export interface ArtificialIntelligenceStateSegment extends BasicStateSegment {
 
 export type StateSegment = ScorecardStateSegment
   | RequirementsStateSegment
+  | OutputStateSegment
   | CalculationsStateSegment
   | AssignmentsStateSegment
   | DataIntegrationStateSegment

@@ -3,9 +3,10 @@ import CompiledStrategy from 'type/CompiledStrategy';
 import CreditProcessState from 'type/CreditProcessState';
 import moduleCompilerFactory from 'module/moduleCompilerFactory';
 import { Module } from 'type/Module';
-import stateManager from 'stateManager';
+import stateManager from 'updateState';
 import { StrategyVariable } from 'type/variable/StrategyVariable';
 import { Operation } from 'type/Operation';
+import checkSegmentsConditions from 'checkSegmentsConditions';
 
 export default class CreditPipeline {
   private machinelearning?: any;
@@ -32,8 +33,13 @@ export default class CreditPipeline {
 
       for (const { module, operation } of this.operations) {
         const segments = await operation(processingState);
+        const successSegments = checkSegmentsConditions(segments)(processingState);
 
-        processingState = await stateManager.updateStateWithModuleResults(module, segments, processingState);
+        if (!successSegments) {
+          throw new Error(`There are no segments that meet conditions for module ${module.display_name}`);
+        }
+
+        processingState = await stateManager.updateStateWithModuleResults(module, successSegments, processingState);
       }
 
       const protectedVariables = new Set(['strategy_status', 'passed']);
