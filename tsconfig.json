@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
     "lib": ["es2017"],
     "target": "es6",
     "module": "commonjs",
@@ -8,5 +7,6 @@
     "esModuleInterop": true,
     "outDir": "./dist",
     "strict": true,
+    "typeRoots": ["type/modules", "node_modules/@types"]
   }
 }

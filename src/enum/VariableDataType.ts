@@ -3,4 +3,5 @@ export enum VariableDataType {
   Date = 'Date',
   Number = 'Number',
   String = 'String',
+  Evaluation = 'Evaluation',
 }

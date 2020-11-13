@@ -13,4 +13,4 @@ export enum ConditionTest {
   NotDeepEqual = 'NOT DEEPEQUAL',
   IsNull = 'IS NULL',
   IsNotNull = 'IS NOT NULL',
-};
+}

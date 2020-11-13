@@ -6,4 +6,4 @@ export enum ModuleDisplayType {
   output = 'Rule Based Output',
   requirements = 'Requirements Rules',
   scorecard = 'Scoring Model',
-};
+}

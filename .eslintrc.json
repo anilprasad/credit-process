@@ -1,34 +1,30 @@
+
 {
-  "extends": "eslint:recommended",
-  "plugins": [],
-  "parserOptions": {
-    "ecmaFeatures": {
-      "ecmaVersion": 6,
-      "jsx": true
-    }
-  },
-  "ecmaFeatures": {
-    "ecmaVersion": 6
-  },
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "rules": {
-    "jsx-quotes": ["error", "prefer-double"],
-    "indent": ["error", 2],
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "brace-style": ["warn", "1tbs"],
+    "comma-dangle": ["error", "always-multiline"],
+    "eqeqeq": "warn",
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "max-len": ["warn", { "code": 120 }],
+    "no-cond-assign": ["warn", "always"],
+    "no-console": "warn",
+    "no-unused-vars": "warn",
     "quotes": ["error", "single"],
     "semi": ["warn", "always"],
-    "comma-dangle": ["warn", "always"],  
-    "object-curly-spacing": ["error", "always"],
-    "eqeqeq": "warn",
-    "no-cond-assign": ["warn", "always"],
-    "no-unused-vars": "warn",
-    "no-console": "warn",
-    "brace-style": ["warn", "1tbs"],
     "strict": ["error", "safe"]
-  },
-  "env": {
-    "browser": true,
-    "commonjs": true,
-    "es6": true,
-    "node": true,
-    "mocha": true
   }
 }

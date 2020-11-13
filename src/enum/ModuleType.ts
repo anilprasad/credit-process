@@ -6,4 +6,4 @@ export enum ModuleType {
   output = 'output',
   requirements = 'requirements',
   scorecard = 'scorecard',
-};
+}

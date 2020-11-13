@@ -10,4 +10,4 @@ export enum CompareOperand {
   notequal = 'notequal',
   notin = 'notin',
   range = 'range',
-};
+}

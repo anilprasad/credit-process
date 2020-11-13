@@ -1,26 +1,23 @@
-import * as AWS from 'aws-sdk';
-import CompiledStrategy from 'type/CompiledStrategy';
-import CreditProcessState from 'type/CreditProcessState';
-import moduleCompilerFactory from 'module/moduleCompilerFactory';
-import { Module } from 'type/Module';
-import stateManager from 'updateState';
-import { StrategyVariable } from 'type/variable/StrategyVariable';
-import { Operation } from 'type/Operation';
-import checkSegmentsConditions from 'checkSegmentsConditions';
+import { CompiledStrategy } from './interface/CompiledStrategy';
+import { CreditProcessState } from './interface/CreditProcessState';
+import { Module } from './interface/Module';
+import { StateSegment } from './interface/StateSegment';
+import { StrategyVariable } from './interface/variable/StrategyVariable';
+import moduleCompilerFactory from './moduleCompilerFactory';
+import StateManager from './StateManager';
+
+type Operation = (state: CreditProcessState) => Promise<StateSegment[]>;
 
 export default class CreditPipeline {
-  private machinelearning?: any;
-  private operations?: Array<{ operation: Operation, module: Module }>;
+  private operations?: Array<{ operation: Operation; module: Module }>;
 
   public initialize = async (compiledStrategy: CompiledStrategy) => {
-    this.initMachineLearning();
-
-    this.operations = [];
-
-    for (const module of compiledStrategy.module_run_order) {
-      const operation = await this.moduleToOperation(module, compiledStrategy);
-      this.operations.push({ operation, module });
-    }
+    this.operations = compiledStrategy.module_run_order.map(module => {
+      return {
+        operation: moduleCompilerFactory(module, compiledStrategy),
+        module,
+      };
+    });
   }
 
   public run = async (state: CreditProcessState) => {
@@ -28,64 +25,44 @@ export default class CreditPipeline {
       throw new Error('Pipeline not initialized');
     }
 
-    try {
-      let processingState = Object.assign({}, state);
+    let processingState = {...state };
 
+    try {
       for (const { module, operation } of this.operations) {
         const segments = await operation(processingState);
-        const successSegments = checkSegmentsConditions(segments)(processingState);
 
-        if (!successSegments) {
-          throw new Error(`There are no segments that meet conditions for module ${module.display_name}`);
-        }
-
-        processingState = await stateManager.updateStateWithModuleResults(module, successSegments, processingState);
+        processingState = await StateManager.updateStateWithModuleResults(
+          module,
+          segments,
+          processingState,
+        );
       }
-
-      const protectedVariables = new Set(['strategy_status', 'passed']);
-
-      const result = this.formatStrategyResult(processingState, protectedVariables);
-
-      return result;
-    } catch(error) {
-      const protectedVariables = new Set([
-        'decline_reasons',
-        'credit_process',
-        'passed',
-        'strategy_status',
-        'error',
-        'message',
-        'calculated_variables',
-        'output_variables',
-        'scorecard_variables',
-        'assignment_variables',
-        'artificialintelligence_variables',
-        'dataintegration_variables',
-      ]);
-
-      const result = this.formatStrategyResult(error, protectedVariables, true);
-
-      return result;
+    } catch (error) {
+      processingState = StateManager.appendError(processingState, error);
     }
+
+    const protectedVariables = new Set([
+      'artificialintelligence_variables',
+      'assignment_variables',
+      'calculated_variables',
+      'credit_process',
+      'dataintegration_variables',
+      'decline_reasons',
+      'error',
+      'message',
+      'output_variables',
+      'passed',
+      'scorecard_variables',
+      'strategy_status',
+    ]);
+
+    const result = this.formatStrategyResult(processingState, protectedVariables);
+
+    return result;
   };
 
-  private moduleToOperation = async (module: Module, strategy: CompiledStrategy) => {
-    const moduleCompilationOptions = {
-      segments: module.segments,
-      module_name: module.name,
-      module_type: module.type,
-      integration: module.dataintegration,
-      machinelearning: this.machinelearning,
-      module_display_name: module.display_name,
-      input_variables: strategy.input_variables,
-      output_variables: strategy.output_variables,
-    };
-
-    return moduleCompilerFactory(moduleCompilationOptions);
-  }
-
-  private formatStrategyResult(state: CreditProcessState, protectedVariables: Set<string>, failed = false) {
-    const output_variables = {
+  private formatStrategyResult(state: CreditProcessState, protectedVariables: Set<string>) {
+    const output_variables: Record<string, unknown> = {
       ...state.calculated_variables,
       ...state.output_variables,
       ...state.scorecard_variables,
@@ -110,7 +87,7 @@ export default class CreditPipeline {
       }
       
       if (!protectedVariables.has(key)) {
-        input_variables[key] = state[key];
+        input_variables[key] = state[key] as StrategyVariable;
       }
     });
 
@@ -119,35 +96,14 @@ export default class CreditPipeline {
       : [];
 
     return {
-      passed: !failed && (state.passed === undefined || state.passed),
+      passed: !state.error && (state.passed === undefined || state.passed),
       input_variables,
       output_variables,
       decline_reasons: state.decline_reasons || [],
       processing_detail: state.credit_process,
       data_sources,
       error: state.error,
-      message: state.message,
+      message: state.error?.message,
     };
-  }
-
-  private initMachineLearning = () => {
-    if (this.machinelearning) {
-      return;
-    }
-  
-    const {
-      AWSMachineLearningRegion,
-      AWSMachineLearningKey,
-      AWSMachineLearningSecret,
-    } = process.env;
-    
-    if (!AWSMachineLearningRegion || !AWSMachineLearningKey || !AWSMachineLearningSecret) {
-      return;
-    }
-  
-    AWS.config.update({ region: AWSMachineLearningRegion, });
-    AWS.config.credentials = new AWS.Credentials(AWSMachineLearningKey, AWSMachineLearningSecret);
-  
-    this.machinelearning = new AWS.MachineLearning();
   }
 }
