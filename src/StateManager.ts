@@ -31,11 +31,9 @@ export default class StateManager {
     segments: StateSegment[],
     state: CreditProcessState,
   ) => {
-    state.credit_process = state.credit_process || [];
-
     const StateTransformerClass = moduleTypeToStateTransformerClass[module.type];
     const moduleStateTransformer = new StateTransformerClass();
-    
+
     return moduleStateTransformer.transform(module, segments, state);
   };
 

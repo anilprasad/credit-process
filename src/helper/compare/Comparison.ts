@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export class Conditional {
+export class Comparison {
   public static gt = (value: any, compareTo: any) => {
     if (checkNullValues(compareTo, value)) {
       return false;
@@ -134,11 +134,11 @@ export class Conditional {
   }
 
   public static notEqual = (value: any, compareTo: any) => {
-    return !Conditional.equal(value, compareTo);
+    return !Comparison.equal(value, compareTo);
   }
 
   public static notIn(value: any, haystack: any) {
-    return !Conditional.in(value, haystack);
+    return !Comparison.in(value, haystack);
   }
 
   public static isNull = (value: any) => {
@@ -156,5 +156,5 @@ const isDate = (value: any) => {
 };
 
 const checkNullValues = (...values: any[]) => {
-  return values.includes(null);
+  return values.includes(null) || values.includes(undefined);
 };

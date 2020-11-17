@@ -81,11 +81,11 @@ export default class CreditPipeline {
       if (state[key] !== null && typeof state[key] === 'object') {
         return;
       }
-      
+
       if (output_variables[key] !== undefined) {
         return;
       }
-      
+
       if (!protectedVariables.has(key)) {
         input_variables[key] = state[key] as StrategyVariable;
       }

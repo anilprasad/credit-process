@@ -12,10 +12,10 @@ export class ConditionsChecker {
 
     segment.conditions.forEach((condition: Rule) => {
       const conditionResult = runComparison(condition, state);
-  
+
       this.addRuleToGroup(condition.rule_name, conditionResult, condition.rule_type);
     });
-  
+
     return [...this.ruleGroups.values()].every((result) => result);
   };
 

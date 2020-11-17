@@ -7,16 +7,19 @@ import { StateSegment } from '../../interface/StateSegment';
 export default abstract class AbstractStateTransformer {
   protected abstract moduleType: ModuleType;
 
-  public transform = async (module: Module, segments: StateSegment[], state: CreditProcessState) => {  
-    if (segments.length === 0) {  
-      return this.noSegmentTransform(module, state);
+  public transform = async (module: Module, segments: StateSegment[], state: CreditProcessState) => {
+    const _state = { ...state };
+    _state.credit_process = _state.credit_process || [];
+
+    if (segments.length === 0) {
+      return this.noSegmentTransform(module, _state);
     }
 
     if (segments.length > 1) {
-      return this.multipleSegmentTransform(module, segments, state);
+      return this.multipleSegmentTransform(module, segments, _state);
     }
 
-    return this.singleSegmentTransform(module, segments[0], state);
+    return this.singleSegmentTransform(module, segments[0], _state);
   }
 
   protected async noSegmentTransform(
@@ -54,7 +57,7 @@ export default abstract class AbstractStateTransformer {
     return this.segmentCountExceededReject(state, module.display_name);
   }
 
-  protected async segmentCountExceededReject(state: CreditProcessState, moduleDisplayName: string) {  
+  protected async segmentCountExceededReject(state: CreditProcessState, moduleDisplayName: string) {
     return Promise.reject({
       error: `Error in ${moduleDisplayName} decision module:
       The decision request falls into multiple population segments and could not be processed.`,

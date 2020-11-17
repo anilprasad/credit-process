@@ -44,7 +44,7 @@ const getVariableValue = (
   const assignedValue = value && type === VariableInputType.Variable
     ? state[value as string] as string | number | boolean | null | undefined
     : value;
-  
+
   if (assignedValue === undefined) {
     throw new Error(`The Variable ${value} is required by a Rule but is not defined.`);
   }

@@ -31,17 +31,17 @@ export abstract class AbstractModule<Segment extends BasicStrategySegment, Retur
   public evaluate = async (state: CreditProcessState) => {
     const conditionsChecker = new ConditionsChecker();
     const segments: ReturnSegment[] = [];
-  
+
     for (const segment of this.segments) {
       if (!conditionsChecker.checkSegment(segment, state)) {
         continue;
       }
 
       const resultSegment = await this.evaluateSegment(segment, state);
-  
+
       segments.push(resultSegment);
     }
-  
+
     return segments;
   }
 

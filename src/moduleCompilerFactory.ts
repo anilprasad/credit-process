@@ -28,7 +28,7 @@ const getEvaluator = (module: Module, strategy: CompiledStrategy) => {
     output_variables: strategy.output_variables,
   } as IModuleCompilationOptions;
 
-  switch (options.module_type) {
+  switch (module.type) {
     case ModuleType.artificialintelligence:
       return new MachineLearning(options as IMachineLearningModuleCompilationOptions);
     case ModuleType.assignments:
@@ -44,7 +44,7 @@ const getEvaluator = (module: Module, strategy: CompiledStrategy) => {
     case ModuleType.scorecard:
       return new Scorecard(options as IScorecardModuleCompilationOptions);
     default:
-      throw new Error('unknown module type');
+      throw new Error(`Unknown module type (${module.type})`);
   }
 };
 
