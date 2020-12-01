@@ -1,11 +1,10 @@
 import { CreditProcessState } from '../../interface/CreditProcessState';
 import { Module } from '../../interface/Module';
 import { ModuleDisplayType } from '../../enum/ModuleDisplayType';
-import { ModuleType } from '../../enum/ModuleType';
 import { StateSegment } from '../../interface/StateSegment';
 
 export default abstract class AbstractStateTransformer {
-  protected abstract moduleType: ModuleType;
+  protected abstract moduleDisplayType: ModuleDisplayType;
 
   public transform = async (module: Module, segments: StateSegment[], state: CreditProcessState) => {
     const _state = { ...state };
@@ -27,7 +26,7 @@ export default abstract class AbstractStateTransformer {
     state: CreditProcessState,
   ): Promise<CreditProcessState> {
     state.credit_process.push({
-      type: ModuleDisplayType[this.moduleType],
+      type: this.moduleDisplayType,
       name: module.name,
       display_name: module.display_name,
       passed: null,

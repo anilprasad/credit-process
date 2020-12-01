@@ -1,9 +1,9 @@
 export enum ModuleDisplayType {
-  artificialintelligence = 'AI Model',
-  assignments = 'Simple Output',
-  calculations = 'Calculation Scripts',
-  dataintegration = 'Data Integration',
-  output = 'Rule Based Output',
-  requirements = 'Requirements Rules',
-  scorecard = 'Scoring Model',
+  Assignments = 'Simple Output',
+  Calculations = 'Calculation Scripts',
+  DataIntegration = 'Data Integration',
+  MachineLearning = 'AI Model',
+  Output = 'Rule Based Output',
+  Requirements = 'Requirements Rules',
+  Scorecard = 'Scoring Model',
 }

@@ -1,6 +1,6 @@
 declare module 'periodicjs' {
-  import { Document, Model } from 'mongoose';
   import * as AWS from 'aws-sdk';
+  import { Document, Model } from 'mongoose';
 
   export const settings: {
     extensions: {

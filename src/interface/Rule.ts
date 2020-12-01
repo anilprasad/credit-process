@@ -1,6 +1,7 @@
 import { ConditionTest } from '../enum/ConditionTest';
 import { RuleType } from '../enum/RuleType';
 import { VariableInputType } from '../enum/VariableInputType';
+import { VariableValue } from '../type/VariableValue';
 
 export interface Rule {
   condition_test: ConditionTest;
@@ -14,5 +15,5 @@ export interface Rule {
   value_minimum?: number | string;
   variable_name: string;
   condition_output_types?: Record<string, VariableInputType>;
-  condition_output?: Record<string, string | number | boolean | null>;
+  condition_output?: Record<string, VariableValue>;
 }

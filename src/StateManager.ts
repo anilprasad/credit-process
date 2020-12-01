@@ -1,28 +1,28 @@
+import assignmentsStateTransformer from './module/assignments/assignmentsStateTransformer';
+import calculationsStateTransformer from './module/calculations/calculationsStateTransformer';
 import { CreditProcessState } from './interface/CreditProcessState';
+import dataIntegrationsStateTransformer from './module/data-integrations/dataIntegrationsStateTransformer';
+import machineLearningStateTransformer from './module/machine-learning/machineLearningStateTransformer';
 import { Module } from './interface/Module';
 import { ModuleType } from './enum/ModuleType';
+import outputStateTransformer from './module/output/outputStateTransformer';
+import requirementsStateTransformer from './module/requirements/requirementsStateTransformer';
+import scorecardStateTransformer from './module/scorecard/scorecardStateTransformer';
 import { StateSegment } from './interface/StateSegment';
-import AssignmentsStateTransformer from './module/assignments/AssignmentsStateTransformer';
-import CalculationsStateTransformer from './module/calculations/CalculationsStateTransformer';
-import DataIntegrationsStateTransformer from './module/data-integrations/DataIntegrationsStateTransformer';
-import MachineLearningStateTransformer from './module/machine-learning/MachineLearningStateTransformer';
-import OutputStateTransformer from './module/output/OutputStateTransformer';
-import RequirementsStateTransformer from './module/requirements/RequirementsStateTransformer';
-import ScoreCardStateTransformer from './module/scorecard/ScorecardStateTransformer';
 
 interface IErrorStateSegment {
   message?: string;
   decline_reasons?: string[];
 }
 
-const moduleTypeToStateTransformerClass = {
-  [ModuleType.artificialintelligence]: MachineLearningStateTransformer,
-  [ModuleType.assignments]: AssignmentsStateTransformer,
-  [ModuleType.calculations]: CalculationsStateTransformer,
-  [ModuleType.dataintegration]: DataIntegrationsStateTransformer,
-  [ModuleType.output]: OutputStateTransformer,
-  [ModuleType.requirements]: RequirementsStateTransformer,
-  [ModuleType.scorecard]: ScoreCardStateTransformer,
+const moduleTypeToStateTransformer = {
+  [ModuleType.Assignments]: assignmentsStateTransformer,
+  [ModuleType.Calculations]: calculationsStateTransformer,
+  [ModuleType.DataIntegration]: dataIntegrationsStateTransformer,
+  [ModuleType.MachineLearning]: machineLearningStateTransformer,
+  [ModuleType.Output]: outputStateTransformer,
+  [ModuleType.Requirements]: requirementsStateTransformer,
+  [ModuleType.Scorecard]: scorecardStateTransformer,
 };
 
 export default class StateManager {
@@ -31,8 +31,7 @@ export default class StateManager {
     segments: StateSegment[],
     state: CreditProcessState,
   ) => {
-    const StateTransformerClass = moduleTypeToStateTransformerClass[module.type];
-    const moduleStateTransformer = new StateTransformerClass();
+    const moduleStateTransformer = moduleTypeToStateTransformer[module.type];
 
     return moduleStateTransformer.transform(module, segments, state);
   };

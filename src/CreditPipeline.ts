@@ -1,15 +1,15 @@
 import { CompiledStrategy } from './interface/CompiledStrategy';
 import { CreditProcessState } from './interface/CreditProcessState';
 import { Module } from './interface/Module';
-import { StateSegment } from './interface/StateSegment';
-import { StrategyVariable } from './interface/variable/StrategyVariable';
 import moduleCompilerFactory from './moduleCompilerFactory';
 import StateManager from './StateManager';
+import { StateSegment } from './interface/StateSegment';
+import { StrategyVariable } from './interface/variable/StrategyVariable';
 
 type Operation = (state: CreditProcessState) => Promise<StateSegment[]>;
 
 export default class CreditPipeline {
-  private operations?: Array<{ operation: Operation; module: Module }>;
+  private operations?: Array<{ operation: Operation, module: Module }>;
 
   public initialize = async (compiledStrategy: CompiledStrategy) => {
     this.operations = compiledStrategy.module_run_order.map(module => {
@@ -25,7 +25,7 @@ export default class CreditPipeline {
       throw new Error('Pipeline not initialized');
     }
 
-    let processingState = {...state };
+    let processingState = { ...state };
 
     try {
       for (const { module, operation } of this.operations) {

@@ -1,9 +1,9 @@
 export enum ModuleType {
-  artificialintelligence = 'artificialintelligence',
-  assignments = 'assignments',
-  calculations = 'calculations',
-  dataintegration = 'dataintegration',
-  output = 'output',
-  requirements = 'requirements',
-  scorecard = 'scorecard',
+  Assignments = 'assignments',
+  Calculations = 'calculations',
+  DataIntegration = 'dataintegration',
+  MachineLearning = 'artificialintelligence',
+  Output = 'output',
+  Requirements = 'requirements',
+  Scorecard = 'scorecard',
 }

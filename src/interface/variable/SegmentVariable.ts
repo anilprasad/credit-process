@@ -1,5 +1,5 @@
-import { VariableDataType } from '../../enum/VariableDataType';
 import { StrategyVariable } from './StrategyVariable';
+import { VariableDataType } from '../../enum/VariableDataType';
 
 export interface SegmentVariable {
   data_type: VariableDataType;

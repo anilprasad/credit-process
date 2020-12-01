@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/digifi-io/credit-process.git"
@@ -24,8 +24,8 @@
     "url": "https://github.com/digifi-io/credit-process/issues"
   },
   "dependencies": {
-    "@digifi/app-config-loader": "^3.2.2",
-    "@types/mongoose": "^5.7.37",
+    "@digifi/app-config-loader": "^4.0.0",
+    "mongoose": "^5.11.11",
     "@types/numeric": "^1.2.1",
     "aws-sdk": "^2.777.0",
     "convertjson2xml": "^0.1.11",
@@ -34,7 +34,7 @@
     "ml-array-mean": "^1.1.4",
     "ml-dataset-iris": "^1.1.1",
     "ml-matrix": "^6.5.3",
-    "ml-random-forest": "^2.0.2",
+    "ml-random-forest": "2.0.1",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
     "numeric": "^1.2.6",

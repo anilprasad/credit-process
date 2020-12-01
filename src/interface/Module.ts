@@ -1,6 +1,6 @@
-import { ModuleType } from '../enum/ModuleType';
-import { DataIntegration } from '../module/data-integrations/interface/DataIntegration';
 import { BasicStrategySegment } from '../module/abstract/interface/BasicStrategySegment';
+import { DataIntegration } from '../module/data-integrations/interface/DataIntegration';
+import { ModuleType } from '../enum/ModuleType';
 
 export interface CommonModule {
   type: ModuleType;

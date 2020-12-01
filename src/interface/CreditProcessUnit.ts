@@ -9,6 +9,6 @@ export interface CreditProcessUnit extends Record<string, any>  {
   output_variable?: string;
   passed?: boolean | null;
   predicted_classification?: string;
-  rules?: Array<{ name: string; passed: boolean; decline_reasons?: string[] }>;
+  rules?: Array<{ name: string, passed: boolean, decline_reasons?: string[] }>;
   status?: string | number;
 }

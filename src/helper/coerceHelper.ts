@@ -1,5 +1,5 @@
-import { VariableDataType } from '../enum/VariableDataType';
 import moment from 'moment';
+import { VariableDataType } from '../enum/VariableDataType';
 
 export const coerceValue = (value: any, dataType: VariableDataType) => {
   try {
@@ -23,7 +23,7 @@ export const coerceValue = (value: any, dataType: VariableDataType) => {
 export const coerceNumberValue = (value: any) => {
   const formattedValue = Number(value);
 
-  return !isNaN(formattedValue) ? formattedValue : value;
+  return !isNaN(formattedValue) ? formattedValue : null;
 };
 
 export const coerceDateValue = (value: any) => {

@@ -1,13 +1,13 @@
-import { CompiledStrategy } from './interface/CompiledStrategy';
-import { DataIntegrationModule, Module } from './interface/Module';
-import { ModuleType } from './enum/ModuleType';
 import Assignments, { IAssignmentsModuleCompilationOptions } from './module/assignments';
 import Calculations, { ICalculationsModuleCompilationOptions } from './module/calculations';
+import { DataIntegrationModule, Module } from './interface/Module';
 import DataIntegrations, { IDataIntegrationsModuleCompilationOptions } from './module/data-integrations';
 import MachineLearning, { IMachineLearningModuleCompilationOptions } from './module/machine-learning';
 import Output, { IOutputModuleCompilationOptions } from './module/output';
 import Requirements, { IRequirementsModuleCompilationOptions } from './module/requirements';
 import Scorecard, { IScorecardModuleCompilationOptions } from './module/scorecard';
+import { CompiledStrategy } from './interface/CompiledStrategy';
+import { ModuleType } from './enum/ModuleType';
 
 type IModuleCompilationOptions = IAssignmentsModuleCompilationOptions
   | ICalculationsModuleCompilationOptions
@@ -29,19 +29,19 @@ const getEvaluator = (module: Module, strategy: CompiledStrategy) => {
   } as IModuleCompilationOptions;
 
   switch (module.type) {
-    case ModuleType.artificialintelligence:
+    case ModuleType.MachineLearning:
       return new MachineLearning(options as IMachineLearningModuleCompilationOptions);
-    case ModuleType.assignments:
+    case ModuleType.Assignments:
       return new Assignments(options as IAssignmentsModuleCompilationOptions);
-    case ModuleType.calculations:
+    case ModuleType.Calculations:
       return new Calculations(options as ICalculationsModuleCompilationOptions);
-    case ModuleType.dataintegration:
+    case ModuleType.DataIntegration:
       return new DataIntegrations(options as IDataIntegrationsModuleCompilationOptions);
-    case ModuleType.output:
+    case ModuleType.Output:
       return new Output(options as IOutputModuleCompilationOptions);
-    case ModuleType.requirements:
+    case ModuleType.Requirements:
       return new Requirements(options as IRequirementsModuleCompilationOptions);
-    case ModuleType.scorecard:
+    case ModuleType.Scorecard:
       return new Scorecard(options as IScorecardModuleCompilationOptions);
     default:
       throw new Error(`Unknown module type (${module.type})`);

@@ -1,7 +1,7 @@
+import * as conditionHelper from '../../helper/conditionHelper';
 import { BasicStateSegment } from './interface/BasicStateSegment';
 import { BasicStrategySegment } from './interface/BasicStrategySegment';
 import { CompiledStrategy } from '../../interface/CompiledStrategy';
-import { ConditionsChecker } from '../../helper/conditions-check/ConditionsChecker';
 import { CreditProcessState } from '../../interface/CreditProcessState';
 import { Module } from '../../interface/Module';
 
@@ -29,11 +29,10 @@ export abstract class AbstractModule<Segment extends BasicStrategySegment, Retur
   }
 
   public evaluate = async (state: CreditProcessState) => {
-    const conditionsChecker = new ConditionsChecker();
     const segments: ReturnSegment[] = [];
 
     for (const segment of this.segments) {
-      if (!conditionsChecker.checkSegment(segment, state)) {
+      if (!conditionHelper.checkSegmentConditions(segment, state)) {
         continue;
       }
 
