@@ -1,64 +1,62 @@
 {
-  "contributors": [
-    {
-      "name": "Jan Bialostok",
-      "email": "janbialostok@gmail.com"
-    },
-    {
-      "name": "Mark Waldron",
-      "email": "markewaldron@gmail.com"
-    },
-    {
-      "name": "Iris Dan",
-      "email": "yjdan92@gmail.com"
-    },
-    {
-      "name": "Cody Hahn",
-      "email": "codhah92@gmail.com"
-    }
-  ],
-  "author": "DigiFi",
-  "bugs": {
-    "url": "https://github.com/digifi-io/credit-process/issues"
-  },
-  "dependencies": {
-    "@digifi-los/assignments": "^0.0.1",
-    "@digifi-los/calculations": "^0.0.1",
-    "@digifi-los/comparison": "^0.0.2",
-    "@digifi-los/data-integrations-strategy": "^0.0.30",
-    "@digifi-los/ml": "^0.0.1",
-    "@digifi-los/output": "^0.0.1",
-    "@digifi-los/requirements": "^0.0.3",
-    "@digifi-los/scorecard": "^0.0.1",
-    "@digifi-los/segmentloader": "^0.0.2",
-    "numeric": "~1.2.6",
-    "promisie": "^1.6.1",
-    "sinon": "^6.0.0",
-    "sinon-chai": "^3.2.0",
-    "string-to-json": "^0.1.0"
-  },
-  "description": "Dynamic credit pipeline creator for DigiFi DecisionVision Platform",
-  "devDependencies": {
-    "chai": "^3.4.1",
-    "chai-spies": "^1.0.0",
-    "fs-extra": "^0.30.0",
-    "mocha": "^2.4.4",
-    "periodicjs": "^10.9.31"
-  },
-  "homepage": "https://github.com/digifi-io/credit-process#readme",
-  "keywords": [],
-  "main": "index.js",
-  "name": "@digifi-los/credit-process",
-  "optionalDependencies": {},
-  "readme": "\n",
-  "readmeFilename": "README.md",
+  "version": "1.0.4",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/digifi-io/credit-process.git"
   },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "start": "node ./index.js",
-    "test": "export NODE_ENV=test && mocha -R spec --recursive"
+    "build": "rm -rf dist/ && tsc",
+    "lint": "eslint src --ext .ts",
+    "prepare": "npm run build",
+    "test": "jest"
   },
-  "version": "0.1.25"
+  "author": "DigiFi",
+  "description": "Dynamic credit pipeline creator for DigiFi DecisionVision Platform",
+  "homepage": "https://github.com/digifi-io/credit-process#readme",
+  "keywords": [],
+  "name": "@digifi-los/credit-process",
+  "optionalDependencies": {},
+  "readme": "\n",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/digifi-io/credit-process/issues"
+  },
+  "dependencies": {
+    "@digifi/app-config-loader": "^4.0.0",
+    "mongoose": "^5.11.11",
+    "@types/numeric": "^1.2.1",
+    "aws-sdk": "^2.777.0",
+    "convertjson2xml": "^0.1.11",
+    "fs-extra": "^6.0.1",
+    "mathjs": "^7.6.0",
+    "ml-array-mean": "^1.1.4",
+    "ml-dataset-iris": "^1.1.1",
+    "ml-matrix": "^6.5.3",
+    "ml-random-forest": "2.0.1",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.31",
+    "numeric": "^1.2.6",
+    "urlencode": "^1.1.0",
+    "xml2js": "^0.4.23"
+  },
+  "devDependencies": {
+    "@types/aws-sdk": "^2.7.0",
+    "@types/fs-extra": "^9.0.2",
+    "@types/mathjs": "^6.0.7",
+    "@types/moment-timezone": "^0.5.30",
+    "@types/moment": "^2.13.0",
+    "@types/node": "^14.14.5",
+    "@types/urlencode": "^1.1.2",
+    "@types/xml2js": "^0.4.5",
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint": "^7.12.1",
+    "jest": "^26.6.3",
+    "periodicjs": "^10.70.92",
+    "ts-jest": "^26.4.3",
+    "typescript": "^4.0.3"
+  }
 }

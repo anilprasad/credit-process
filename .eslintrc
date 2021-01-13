@@ -1,0 +1,49 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/member-delimiter-style": ["error", {
+      "multiline": {
+        "delimiter": "semi",
+        "requireLast": true
+      },
+      "singleline": {
+        "delimiter": "comma",
+        "requireLast": false
+      }
+    }],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["warn"],
+    "sort-imports": ["warn", {
+      "ignoreCase": true,
+      "ignoreDeclarationSort": false,
+      "ignoreMemberSort": false,
+      "memberSyntaxSortOrder": ["none", "all", "multiple", "single"],
+      "allowSeparatedGroups": true
+    }],
+    "brace-style": ["warn", "1tbs"],
+    "comma-dangle": ["error", "always-multiline"],
+    "eol-last": ["error", "always"],
+    "eqeqeq": "warn",
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "max-len": ["warn", { "code": 120 }],
+    "no-cond-assign": ["warn", "always"],
+    "no-console": "warn",
+    "quotes": ["error", "single"],
+    "semi": ["warn", "always"],
+    "strict": ["error", "safe"]
+  }
+}
