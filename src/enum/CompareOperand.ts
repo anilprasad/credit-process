@@ -1,4 +1,4 @@
-export enum CompareOperand {
+export const enum CompareOperand {
   Cap = 'cap',
   Equal = 'equal',
   Floor = 'floor',

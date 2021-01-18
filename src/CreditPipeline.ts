@@ -1,8 +1,8 @@
+import * as stateHelper from './helper/stateHelper';
 import { CompiledStrategy } from './interface/CompiledStrategy';
 import { CreditProcessState } from './interface/CreditProcessState';
 import { Module } from './interface/Module';
 import moduleCompilerFactory from './moduleCompilerFactory';
-import StateManager from './StateManager';
 import { StateSegment } from './interface/StateSegment';
 import { StrategyVariable } from './interface/variable/StrategyVariable';
 
@@ -31,14 +31,14 @@ export default class CreditPipeline {
       for (const { module, operation } of this.operations) {
         const segments = await operation(processingState);
 
-        processingState = await StateManager.updateStateWithModuleResults(
+        processingState = await stateHelper.updateStateWithModuleResults(
           module,
           segments,
           processingState,
         );
       }
     } catch (error) {
-      processingState = StateManager.appendError(processingState, error);
+      processingState = stateHelper.appendError(processingState, error);
     }
 
     const protectedVariables = new Set([

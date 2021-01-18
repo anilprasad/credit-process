@@ -1,11 +1,11 @@
-import calculationsStateTransformer from '../src/module/calculations/calculationsStateTransformer';
-import { CommonModule } from '../src/interface/Module';
-import { CreditProcessState } from '../src/interface/CreditProcessState';
-import { ModuleType } from '../src/enum/ModuleType';
-import StateManager from '../src/StateManager';
-import { StateSegment } from '../src/interface/StateSegment';
+import * as stateHelper from '../../src/helper/stateHelper';
+import calculationsStateTransformer from '../../src/module/calculations/calculationsStateTransformer';
+import { CommonModule } from '../../src/interface/Module';
+import { CreditProcessState } from '../../src/interface/CreditProcessState';
+import { ModuleType } from '../../src/enum/ModuleType';
+import { StateSegment } from '../../src/interface/StateSegment';
 
-describe('State Manager', () => {
+describe('stateHelper', () => {
   describe('updateStateWithModuleResults', () => {
     it('runs module state transformer', () => {
       const transformMockFn = calculationsStateTransformer.transform = jest.fn();
@@ -17,7 +17,7 @@ describe('State Manager', () => {
       const state = {} as unknown as CreditProcessState;
       const segments: StateSegment[] = [];
       
-      StateManager.updateStateWithModuleResults(module, segments, state);
+      stateHelper.updateStateWithModuleResults(module, segments, state);
 
       expect(transformMockFn).toBeCalledWith(module, segments, state);
     });
@@ -27,7 +27,7 @@ describe('State Manager', () => {
     it('appends error and/or decline_resaons to state', () => {
       const state = {} as unknown as CreditProcessState;
       
-      const resultState = StateManager.appendError(
+      const resultState = stateHelper.appendError(
         state,
         { message: 'error', decline_reasons: ['decline reason']},
       );

@@ -1,12 +1,10 @@
 import { CompiledStrategy } from './interface/CompiledStrategy';
 import CreditPipeline from './CreditPipeline';
 
-export default class CreditProcess {
-  static createPipeline = async (compiledStrategy: CompiledStrategy) => {
-    const creditPipeline = new CreditPipeline();
+export const createPipeline = async (compiledStrategy: CompiledStrategy) => {
+  const creditPipeline = new CreditPipeline();
 
-    await creditPipeline.initialize(compiledStrategy);
+  await creditPipeline.initialize(compiledStrategy);
 
-    return creditPipeline.run;
-  };
-}
+  return creditPipeline.run;
+};
