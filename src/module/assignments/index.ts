@@ -5,7 +5,6 @@ import { AssignmentsStrategySegment } from './interface/AssignmentsStrategySegme
 import { CreditProcessState } from '../../interface/CreditProcessState';
 import { ModuleType } from '../../enum/ModuleType';
 import numeric from 'numeric';
-import string2json from 'string-to-json';
 import vm from 'vm';
 
 export interface IAssignmentsModuleCompilationOptions
@@ -24,46 +23,39 @@ export default class Assignments extends AbstractModule<AssignmentsStrategySegme
   ): Promise<AssignmentsStateSegment> => {
     const _state = { ...state };
 
-    const script = this.buildScript(segment.variables);
-    const { sandbox, assignment } = this.prepareAssignment(_state, script);
-    assignment.runInContext(sandbox);
+    const sandbox = this.buildContext(_state);
 
     return {
       type: ModuleType.Assignments,
       name: this.moduleName,
       segment: segment.name,
-      assignments: string2json.convert(sandbox._global.assignments),
+      assignments: this.calculateVariables(sandbox, segment.variables),
     };
   };
 
-  private buildScript = (variables: AssignmentsRule[]) => {
-    const assignmentsBlock = variables.map((variable) => {
-      const fn = new Function(variable.assignment_operation);
-
-      return `_global.assignments['${variable.variable_name}'] = (${fn.toString()})();`;
-    }).join('\r\n');
-
-    return `'use strict';
-      ${assignmentsBlock}
-    `;
-  };
-
-  private prepareAssignment = (
-    state: CreditProcessState,
-    script: string,
-  ) => {
-    const sandbox = {
+  private buildContext = (state: CreditProcessState) => {
+    const context = {
       _global: {
-        assignments: {},
         ...state,
       },
-      numeric,
       ...state,
+      numeric: numeric,
     };
 
-    const assignment = new vm.Script(script);
-    vm.createContext(sandbox);
+    return vm.createContext(context);
+  };
 
-    return { sandbox, assignment };
+  private calculateVariables = (sandbox: vm.Context, variables: AssignmentsRule[]) => {
+    return variables.reduce((calculations: Record<string, unknown>, variable) => {
+      const calculation = vm.compileFunction(
+        variable.assignment_operation,
+        [],
+        { parsingContext: sandbox },
+      );
+
+      calculations[variable.variable_name] = calculation();
+
+      return calculations;
+    }, {});
   };
 }
